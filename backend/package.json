@@ -1,0 +1,32 @@
+{
+  "name": "smartcare",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/ravikantsuthar-07/smartcaref#readme",
+  "bugs": {
+    "url": "https://github.com/ravikantsuthar-07/smartcaref/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ravikantsuthar-07/smartcaref.git"
+  },
+  "license": "ISC",
+  "author": "Ravikant Suthar",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.jss"
+  },
+  "dependencies": {
+    "axios": "^1.13.5",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.2.0",
+    "morgan": "^1.10.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
