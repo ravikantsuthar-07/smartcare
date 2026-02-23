@@ -9,3 +9,9 @@ export const authRole = {
     DOCTOR: 2,
     ADMIN: 3
 } 
+
+export const verificationAuth = {
+    PENDING: 1,
+    VERIFIED: 2,
+    SUSPENDED: 3
+}

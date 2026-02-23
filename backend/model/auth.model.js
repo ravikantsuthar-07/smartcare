@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { authGender, authRole } from '../constant/auth.constant.js';
+import { authGender, authRole, verificationAuth } from '../constant/auth.constant.js';
 
 const authSchema = mongoose.Schema({
     name: {
@@ -48,6 +48,11 @@ const authSchema = mongoose.Schema({
     otpExpire: {
         type: Date,
         default: null
+    },
+    verification: {
+        type: Number,
+        enum: [verificationAuth.PENDING, verificationAuth.VERIFIED, verificationAuth.SUSPENDED],
+        default: verificationAuth.PENDING
     }
 }, { timestamps: true });
 

@@ -1,5 +1,6 @@
 import { authRole } from "../constant/auth.constant.js";
 import authModel from "../model/auth.model.js";
+import jwt from 'jsonwebtoken';
 
 export const requireSignIn = async (req, res, next) => {
     try {
@@ -32,20 +33,20 @@ export const requireSignIn = async (req, res, next) => {
 export const isUser = async (req, res, next) => {
     const user = await authModel.findById(req.user._id);
     if (!user) return res.status(404).json({ success: false, message: 'User is Not Found!..' })
-    if (user.role !== authRole.PATIENTS) return res.status(403).json({ success: false, message: 'Access denied, user only' });
+    if (user.roles !== authRole.PATIENTS) return res.status(403).json({ success: false, message: 'Access denied, user only' });
     next();
 };
 
 export const isAdmin = async (req, res, next) => {
     const user = await authModel.findById(req.user._id);
     if (!user) return res.status(404).json({ success: false, message: 'User is Not Found!..' })
-    if (user.role !== authRole.ADMIN) return res.status(403).json({ success: false, message: 'Access denied, user only' });
+    if (user.roles !== authRole.ADMIN) return res.status(403).json({ success: false, message: 'Access denied, user only' });
     next();
 };
 
 export const isDoctor = async (req, res, next) => {
     const user = await authModel.findById(req.user._id);
     if (!user) return res.status(404).json({ success: false, message: 'User is Not Found!..' })
-    if (user.role !== authRole.DOCTOR) return res.status(403).json({ success: false, message: 'Access denied, user only' });
+    if (user.roles !== authRole.DOCTOR) return res.status(403).json({ success: false, message: 'Access denied, user only' });
     next();
 };

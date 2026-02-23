@@ -1,4 +1,4 @@
-import { authRole } from "../constant/auth.constant.js";
+import { authRole, verificationAuth } from "../constant/auth.constant.js";
 import authModel from "../model/auth.model.js";
 import jwt from 'jsonwebtoken';
 import { sendOTPviaFast2SMS } from "../services/sms.service.js";
@@ -25,6 +25,7 @@ export const registerAuthController = async (req, res) => {
             name,
             email,
             mobile,
+            gender,
             otp,
             otpExpire
         };
@@ -84,7 +85,7 @@ export const verifyOTPAuthController = async (req, res) => {
         if (!mobile) return res.status(404).json({ success: false, message: 'Mobile Number is Required!..' });
         if (!otp) return res.status(404).json({ success: false, message: 'OTP is Required!..' });
 
-        const auth = await authModel.findOne({ mobile });
+        const auth = await authModel.findOne({ mobile }).populate('specaialization');
         if (!auth) return res.status(404).json({ success: false, message: 'User not found' });
 
         if (auth.otp != otp) return res.status(419).json({ success: false, message: 'OTP is Invaild!..' });
@@ -123,6 +124,88 @@ export const sendOTPAuthController = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: 'OTP Send Successfully',
+            auth
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+            error
+        });
+    }
+}
+
+export const updateAuthController = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const {name, email, mobile, specaialization, registerNumber, age, gender, verification, isActive} = req.body;
+        const updateData = {};
+        if (name) updateData.name = name;
+        if (email) updateData.email = email;
+        if (mobile) updateData.mobile = mobile;
+        if (specaialization) updateData.specaialization = specaialization;
+        if (registerNumber) updateData.registerNumber = registerNumber;
+        if (age) updateData.age = age;
+        if (gender) updateData.gender = gender;
+        if (verification) updateData.verification = verification;
+        if (typeof isActive === 'boolean') updateData.isActive = isActive;
+
+        const auth = await authModel.findByIdAndUpdate(id, updateData, { new: true });
+        if (!auth){
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'User updated successfully',
+            auth
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+            error
+        });
+    }
+}
+
+export const gettingAuthController = async (req, res) => {
+    try {
+        const {mode} = req.query;
+        if (mode === 'doctor') {
+            const auth = await authModel.find({ roles: authRole.DOCTOR }).populate('specaialization');
+            return res.status(200).json({
+                success: true,
+                message: 'User fetched successfully',
+                auth
+            });
+        }
+        if (mode === 'patient') {
+            const auth = await authModel.find({ roles: authRole.PATIENTS });
+            return res.status(200).json({
+                success: true,
+                message: 'User fetched successfully',
+                auth
+            });
+        }
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+            error
+        });
+    }
+}
+
+export const gettingDoctorAuthController = async (req, res) => {
+    try {
+        const auth = await authModel.find({ roles: authRole.DOCTOR, verification: verificationAuth.VERIFIED}).populate('specaialization');
+        return res.status(200).json({
+            success: true,
+            message: 'User fetched successfully',
             auth
         });
     } catch (error) {
