@@ -56,7 +56,7 @@ export const updateSpecailizationController = async (req, res) => {
             success: false,
             message: error.message,
             error
-        })
+        });
     }
 }
 
