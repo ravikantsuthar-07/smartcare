@@ -7,13 +7,24 @@ import { fileURLToPath } from "url";
 
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "https://edocly.xyz",
+  "https://www.edocly.xyz",
+  "http://edocly.xyz",
+  "http://www.edocly.xyz"
+];
 
 app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "http://localhost:5173",
-  ],
-  credentials: true
+  origin: function(origin, callback){
+    if(!origin || allowedOrigins.includes(origin)){
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials:true
 }));
 
 app.use(express.json());
